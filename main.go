@@ -16,7 +16,6 @@ import (
 type config struct {
 	difficultyLevel int
 	apiPort         int
-	rangeMin        int
 	rangeMax        int
 	opCount         int
 	filePath        string
@@ -80,7 +79,6 @@ func generateTest(w http.ResponseWriter, r *http.Request) {
 	q.generateOps(c, ops)
 	q.alignOps()
 	q.createPDF(&c)
-	fmt.Println(">>>>>>>>>>>>>>>", c.filePath)
 	w.Header().Set("Content-Disposition", fmt.Sprintf("attachment; filename=%s", strings.Split(c.filePath, "/")[len(strings.Split(c.filePath, "/"))-1]))
 	w.Header().Set("Content-Type", "application/pdf")
 	http.ServeFile(w, r, c.filePath)
