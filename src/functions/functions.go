@@ -1,3 +1,13 @@
+/*This file is part of Algebror.
+
+Algebror is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+Algebror is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with Algebror. If not, see <https://www.gnu.org/licenses/>.
+
+*/
+
 package functions
 
 import (
@@ -40,11 +50,11 @@ var C Config
 var Q Questions
 
 func (c *Config) Populate() {
-	c.DifficultyLevel = 5
+	c.DifficultyLevel = 2
 	c.ApiPort = 18080
 	c.RangeMax = 10
 	c.OpCount = 40
-	c.FileDst = "./out/"
+	c.FileDst = "./"
 	c.Ops = operations{
 		{name: "addition", sign: "+", numType: "decimal"},
 		{name: "subtraction", sign: "-", numType: "decimal"},
