@@ -30,9 +30,7 @@ This project is licensed under the GNU General Public License v3.0. See the [LIC
 - Fractions test
 - Exponential numbers
 - Error handling
-- No `out` directory
 - Versioning
-- Exception handling for `?d=#` when # > 5
 - Different runtime environments
   - Docker
   - Kubernetes

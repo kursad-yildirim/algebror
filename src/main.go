@@ -16,8 +16,8 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"net/http"
+	"os"
 	"strconv"
 	"strings"
 
@@ -25,23 +25,43 @@ import (
 )
 
 func main() {
-	functions.C.Populate()
+	if err := functions.C.Populate(); err != nil {
+		functions.Clog(err.Error(), "error")
+		os.Exit(1)
+	}
+	functions.Clog(fmt.Sprintf("%#v\n", functions.C), "debug")
+
 	http.HandleFunc("/generate-test", generateTest)
-	fmt.Printf("Server started at :%v\n", functions.C.ApiPort)
-	log.Fatal(http.ListenAndServe(":"+fmt.Sprintf("%v", functions.C.ApiPort), nil))
+	functions.Clog(fmt.Sprintf("Server %s has been initiated at %s:%s%s\n", functions.C.AppName, functions.C.AppServer, functions.C.ApiPort, functions.C.ApiPath), "info")
+	if err := http.ListenAndServe(":"+fmt.Sprintf("%v", functions.C.ApiPort), nil); err != nil {
+		functions.Clog(err.Error(), "error")
+		os.Exit(1)
+	}
+
 }
 
 func generateTest(w http.ResponseWriter, r *http.Request) {
+	functions.C.Populate()
+	dExists := false
 	params := r.URL.Query()
 	for key, values := range params {
 		for _, value := range values {
 			if key == "d" {
+				dExists = true
 				d, err := strconv.Atoi(value)
-				if err == nil {
+				if (err == nil) && (d >= 1) && (d <= 5) {
 					functions.C.DifficultyLevel = d
+				} else {
+					functions.Clog(fmt.Sprintf("Difficulty must be an integer in range [1..5], setting default as level: %v\n", functions.C.DifficultyLevel), "info")
+					http.Error(w, fmt.Sprintf("Difficulty must be an integer in range [1..5], setting default as level: %v\n", functions.C.DifficultyLevel), http.StatusMethodNotAllowed)
+
 				}
 			}
 		}
+	}
+	if !dExists {
+		functions.Clog(fmt.Sprintf("Difficulty is not provided setting default as level: %v\n", functions.C.DifficultyLevel), "info")
+		http.Error(w, fmt.Sprintf("Difficulty is not provided setting default as level: %v\n", functions.C.DifficultyLevel), http.StatusMethodNotAllowed)
 	}
 	functions.Q = nil
 	functions.Q.GenerateOps(functions.C)

@@ -12,9 +12,11 @@ package functions
 
 import (
 	"fmt"
+	"log"
 	"math"
 	"math/rand"
 	"os"
+	"runtime"
 	"strings"
 
 	"github.com/jung-kurt/gofpdf"
@@ -22,13 +24,17 @@ import (
 )
 
 type Config struct {
+	AppName         string
+	AppServer       string
+	ApiPort         string
+	ApiPath         string
 	DifficultyLevel int
-	ApiPort         int
 	RangeMax        int
 	OpCount         int
 	FilePath        string
 	FileDst         string
 	Ops             operations
+	Elevel          string
 }
 
 type operation struct {
@@ -49,9 +55,12 @@ type Questions []question
 var C Config
 var Q Questions
 
-func (c *Config) Populate() {
+func (c *Config) Populate() error {
+	c.AppName = "algebror"
+	c.AppServer = "0.0.0.0"
 	c.DifficultyLevel = 2
-	c.ApiPort = 18080
+	c.ApiPort = "18080"
+	c.ApiPath = "/generate-test"
 	c.RangeMax = 10
 	c.OpCount = 40
 	c.FileDst = "./"
@@ -62,6 +71,9 @@ func (c *Config) Populate() {
 		{name: "division", sign: "/", numType: "integer"},
 		{name: "percentage", sign: "%", numType: "integer"},
 	}
+	c.Elevel = "error"
+
+	return nil
 }
 
 func (q *Questions) GenerateOps(c Config) {
@@ -239,4 +251,18 @@ func generateRandomIndex() string {
 		result[i] = charset[rand.Intn(len(charset))]
 	}
 	return string(result)
+}
+
+func Clog(msg, level string) {
+	_, file, line, _ := runtime.Caller(1)
+	switch level {
+	case "debug":
+		if C.Elevel == "debug" {
+			log.Printf("%v: [%s:%d] %s\n", strings.ToUpper(level), file[strings.LastIndex(file, "/")+1:], line, msg)
+		}
+	case "info":
+		log.Printf("%v: [%s:%d] %s\n", strings.ToUpper(level), file[strings.LastIndex(file, "/")+1:], line, msg)
+	case "error":
+		log.Printf("%v: [%s:%d] %s\n", strings.ToUpper(level), file[strings.LastIndex(file, "/")+1:], line, msg)
+	}
 }
