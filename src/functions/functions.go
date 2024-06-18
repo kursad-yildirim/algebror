@@ -17,6 +17,7 @@ import (
 	"math/rand"
 	"os"
 	"runtime"
+	"strconv"
 	"strings"
 
 	"github.com/jung-kurt/gofpdf"
@@ -56,14 +57,37 @@ var C Config
 var Q Questions
 
 func (c *Config) Populate() error {
-	c.AppName = "algebror"
-	c.AppServer = "0.0.0.0"
-	c.DifficultyLevel = 2
-	c.ApiPort = "18080"
-	c.ApiPath = "/generate-test"
-	c.RangeMax = 10
-	c.OpCount = 40
-	c.FileDst = "./"
+	var err error
+	if c.AppName = os.Getenv("APP_NAME"); len(c.AppName) == 0 {
+		return fmt.Errorf("error-populate: environment missing APP_NAME")
+	}
+	if c.AppServer = os.Getenv("APP_SERVER"); len(c.AppServer) == 0 {
+		return fmt.Errorf("error-populate: environment missing APP_SERVER")
+	}
+	c.DifficultyLevel, err = strconv.Atoi(os.Getenv("DIFFICULTY_LEVEL"))
+	if err != nil {
+		return fmt.Errorf("error-populate: environment missing DIFFICULTY_LEVEL")
+	}
+	if c.ApiPort = os.Getenv("API_PORT"); len(c.ApiPort) == 0 {
+		return fmt.Errorf("error-populate: environment missing API_PORT")
+	}
+	if c.ApiPath = os.Getenv("API_PATH"); len(c.ApiPath) == 0 {
+		return fmt.Errorf("error-populate: environment missing API_PATH")
+	}
+	c.RangeMax, err = strconv.Atoi(os.Getenv("RANGE_MAX"))
+	if err != nil {
+		return fmt.Errorf("error-populate: environment missing RANGE_MAX")
+	}
+	c.OpCount, err = strconv.Atoi(os.Getenv("OP_COUNT"))
+	if err != nil {
+		return fmt.Errorf("error-populate: environment missing OP_COUNT")
+	}
+	if c.FileDst = os.Getenv("FILE_DESTINATION"); len(c.FileDst) == 0 {
+		return fmt.Errorf("error-populate: environment missing FILE_DESTINATION")
+	}
+	if c.Elevel = os.Getenv("LOG_LEVEL"); len(c.Elevel) == 0 {
+		return fmt.Errorf("error-populate: environment missing LOG_LEVEL")
+	}
 	c.Ops = operations{
 		{name: "addition", sign: "+", numType: "decimal"},
 		{name: "subtraction", sign: "-", numType: "decimal"},
@@ -71,7 +95,6 @@ func (c *Config) Populate() error {
 		{name: "division", sign: "/", numType: "integer"},
 		{name: "percentage", sign: "%", numType: "integer"},
 	}
-	c.Elevel = "error"
 
 	return nil
 }
