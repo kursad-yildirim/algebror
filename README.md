@@ -21,10 +21,29 @@ This project is licensed under the GNU General Public License v3.0. See the [LIC
 - It is either one of the operands or the result is asked from the student
 - Application is starts a webserver on `:18080`
   - A `GET` request is accepted on path `/generate-test`
-  - A pdf file of two pages is sent to the client. First page is the sent and the second page is the answer sheet.
+  - A pdf file of two pages is sent to the client. First page is the test and the second page is the answer sheet.
   - Default difficulty level is `2`. if a parameter is sent within the url `?d=#` (where # must be an integer in [1:5]) to set the diffulty
   - A random index of five alphanumeric characters is added to each test
   - Pdf file is also stored in `out` directory within the application directory
+
+## BUILD
+  - `Makefile` requires environment variable `APP_NAME`
+  - `make linux`: Creates binary for linux
+  - `make macos`: Creates binary for macos
+  - `make podman`: Creates container by using podman
+  - `make docker`: Creates container by using docker
+
+## RUN
+  - Make sure the following environment variables are set
+    - APP_NAME: Name of the application
+    - APP_SERVER: Listen address
+    - API_PORT: Listen port
+    - API_PATH: URL Path
+    - DIFFICULTY_LEVEL
+    - RANGE_MAX
+    - OP_COUNT
+    - FILE_DESTINATION
+    - LOG_LEVEL
 
 ## TODO
 - Fractions test
@@ -32,6 +51,5 @@ This project is licensed under the GNU General Public License v3.0. See the [LIC
 - Error handling
 - Versioning
 - Different runtime environments
-  - Docker
   - Kubernetes
   - Openshift
