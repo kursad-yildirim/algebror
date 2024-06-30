@@ -31,9 +31,9 @@ func main() {
 	}
 	functions.Clog(fmt.Sprintf("%#v\n", functions.C), "debug")
 
-	http.HandleFunc("/generate-test", generateTest)
-	functions.Clog(fmt.Sprintf("Server %s has been initiated at %s:%s%s\n", functions.C.AppName, functions.C.AppServer, functions.C.ApiPort, functions.C.ApiPath), "info")
-	if err := http.ListenAndServe(":"+fmt.Sprintf("%v", functions.C.ApiPort), nil); err != nil {
+	http.HandleFunc(functions.C.AppPath, generateTest)
+	functions.Clog(fmt.Sprintf("Server %s has been initiated at %s:%s%s\n", functions.C.AppName, functions.C.AppServer, functions.C.AppPort, functions.C.AppPath), "info")
+	if err := http.ListenAndServe(":"+fmt.Sprintf("%v", functions.C.AppPort), nil); err != nil {
 		functions.Clog(err.Error(), "error")
 		os.Exit(1)
 	}

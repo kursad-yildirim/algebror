@@ -17,18 +17,29 @@ import (
 	"math/rand"
 	"os"
 	"runtime"
-	"strconv"
 	"strings"
 
 	"github.com/jung-kurt/gofpdf"
 	"middle.earth/algebror/tools"
 )
 
+const (
+	appName    = "algebror"
+	appServer  = "0.0.0.0"
+	appPort    = "18080"
+	appPath    = "/generate-test"
+	difficulty = 2
+	rangeMax   = 10
+	opCount    = 40
+	fileDst    = "./"
+	eLevel     = "error"
+)
+
 type Config struct {
 	AppName         string
 	AppServer       string
-	ApiPort         string
-	ApiPath         string
+	AppPort         string
+	AppPath         string
 	DifficultyLevel int
 	RangeMax        int
 	OpCount         int
@@ -57,37 +68,27 @@ var C Config
 var Q Questions
 
 func (c *Config) Populate() error {
-	var err error
 	if c.AppName = os.Getenv("APP_NAME"); len(c.AppName) == 0 {
-		return fmt.Errorf("error-populate: environment missing APP_NAME")
+		c.AppName = appName
 	}
 	if c.AppServer = os.Getenv("APP_SERVER"); len(c.AppServer) == 0 {
-		return fmt.Errorf("error-populate: environment missing APP_SERVER")
+		c.AppServer = appServer
 	}
-	c.DifficultyLevel, err = strconv.Atoi(os.Getenv("DIFFICULTY_LEVEL"))
-	if err != nil {
-		return fmt.Errorf("error-populate: environment missing DIFFICULTY_LEVEL")
+	if c.AppPort = os.Getenv("API_PORT"); len(c.AppPort) == 0 {
+		c.AppPort = appPort
 	}
-	if c.ApiPort = os.Getenv("API_PORT"); len(c.ApiPort) == 0 {
-		return fmt.Errorf("error-populate: environment missing API_PORT")
-	}
-	if c.ApiPath = os.Getenv("API_PATH"); len(c.ApiPath) == 0 {
-		return fmt.Errorf("error-populate: environment missing API_PATH")
-	}
-	c.RangeMax, err = strconv.Atoi(os.Getenv("RANGE_MAX"))
-	if err != nil {
-		return fmt.Errorf("error-populate: environment missing RANGE_MAX")
-	}
-	c.OpCount, err = strconv.Atoi(os.Getenv("OP_COUNT"))
-	if err != nil {
-		return fmt.Errorf("error-populate: environment missing OP_COUNT")
+	if c.AppPath = os.Getenv("API_PATH"); len(c.AppPath) == 0 {
+		c.AppPath = appPath
 	}
 	if c.FileDst = os.Getenv("FILE_DESTINATION"); len(c.FileDst) == 0 {
-		return fmt.Errorf("error-populate: environment missing FILE_DESTINATION")
+		c.FileDst = fileDst
 	}
 	if c.Elevel = os.Getenv("LOG_LEVEL"); len(c.Elevel) == 0 {
-		return fmt.Errorf("error-populate: environment missing LOG_LEVEL")
+		c.Elevel = eLevel
 	}
+	c.DifficultyLevel = difficulty
+	c.RangeMax = rangeMax
+	c.OpCount = opCount
 	c.Ops = operations{
 		{name: "addition", sign: "+", numType: "decimal"},
 		{name: "subtraction", sign: "-", numType: "decimal"},
